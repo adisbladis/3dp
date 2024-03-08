@@ -1,9 +1,22 @@
+{ pkgs ? import <nixpkgs> { }
+, lib ? pkgs.lib
+, callPackages ? pkgs.callPackage
+, callPackage ? pkgs.callPackage
+, nixHtml ? import
+    (
+      let
+        flakeLock = lib.importJSON ./flake.lock;
+      in
+      builtins.fetchGit { inherit (flakeLock.nodes.nixHtml.locked) url rev; }
+    )
+    { }
+}:
 let
-  pkgs = import <nixpkgs> { };
-  inherit (pkgs) lib;
   inherit (lib) mapAttrs;
 
-  inherit (pkgs.callPackages ./lib.nix { }) mkOpenscad mkWeb;
+  inherit (callPackages ./lib.nix { }) mkOpenscad;
+
+  mkWeb = callPackage ./web { inherit nixHtml; };
 
 in
 lib.fix (self: {
@@ -51,48 +64,69 @@ lib.fix (self: {
 
         in
         {
-          screwConnectors = let
-            meta = {
-              description = "Storage bins meant for storing screw connectors";
-            };
-          in rec {
-            regular = mkBins {
-              name = "screwconnectors-regular";
-              inherit meta;
-              targets = {
-                "regular" = {
-                  # 1x2 grids
-                  gridx = 1;
-                  gridy = 2;
+          screwConnectors =
+            let
+              meta = {
+                description = "Storage bins meant for storing screw connectors";
+              };
+            in
+            rec {
+              regular = mkBins {
+                name = "screwconnectors-regular";
+                inherit meta;
+                targets = {
+                  "regular" = {
+                    # 1x2 grids
+                    gridx = 1;
+                    gridy = 2;
 
-                  # Standard height
-                  gridz = 3;
+                    # Standard height
+                    gridz = 3;
 
-                  # One subdivision in the middle
-                  divx = 1;
-                  divy = 2;
+                    # One subdivision in the middle
+                    divx = 1;
+                    divy = 2;
 
-                  # No label, the large bin is meant to be in the bottom of a stack
-                  style_tab = tabStyles.none;
+                    # No label, the large bin is meant to be in the bottom of a stack
+                    style_tab = tabStyles.none;
 
-                  # No magnet holes
-                  style_hole = holeStyles.none;
+                    # No magnet holes
+                    style_hole = holeStyles.none;
+                  };
+                };
+              };
+
+              bottom = mkBins {
+                name = "screwconnectors-bottom";
+                meta = meta // {
+                  longDescription = ''
+                    Parts bins for storing screw connectors.
+                    This piece is meant to be used as a stacked bottom piece.
+                  '';
+                };
+                targets.bottom = regular.targets."regular".constants // {
+                  # My drawers has a maximum total gridz height of ~9
+                  # meaning that with a gridz of 4 I can stack 2 high
+                  gridz = 4;
                 };
               };
             };
 
-            bottom = mkBins {
-              name = "screwconnectors-bottom";
-              meta = meta // {
-                longDescription = ''
-                  Parts bins for storing screw connectors.
-                  This piece is meant to be used as a stacked bottom piece.
-                '';
-              };
-              targets.regular = regular.targets."regular".constants // {
-                # My drawers has a maximum total gridz height of ~9
-                # meaning that with a gridz of 4 I can stack 2 high
-                gridz = 4;
+          assortments = {
+            #
+            transistors = mkBins {
+              name = "transistor-assortment";
+              meta.description = "Transistor assortment bins";
+              targets = {
+                "bin-transistors-24x" = {
+                  gridx = 4;
+                  gridy = 3;
+                  gridz = 3;
+                  divx = 6;
+                  divy = 4;
+                  style_tab = tabStyles.full;
+                  style_hole = holeStyles.none;
+                };
               };
             };
           };
@@ -135,7 +169,10 @@ lib.fix (self: {
       baseplates = {
         deskdrawers =
           let
-            src = pkgs.lib.cleanSource ./.;
+            src = lib.fileset.toSource {
+              root = ./.;
+              fileset = lib.fileset.union ./src ./third_party;
+            };
 
             constants = {
               # Set custom drawer size
