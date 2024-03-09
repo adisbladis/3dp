@@ -103,6 +103,15 @@ let
             };
           } [ ]
       )
+      (
+        <link> {
+          rel = "stylesheet";
+          href = fetchurl {
+            url = "https://cdn.jsdelivr.net/npm/spcss@0.9.0";
+            hash = "sha256-Q9jflzZSanhLoWi4pFNjCiCUZlfx3AKayOvU6nbBGoc=";
+          };
+        } [ ]
+      )
     ])
     (<body> { } [
       (<main> { } [
