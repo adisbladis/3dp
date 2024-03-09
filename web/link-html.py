@@ -36,12 +36,13 @@ if __name__ == "__main__":
     # Rewrite HTML to local store
     for tag in soup.find_all():
         for attr, value in tag.attrs.items():
+            if not isinstance(value, list):
+                values = [ value ]
             for store_path in store_paths:
-                if not value.startswith(store_path):
-                    continue
-
-                found_files.add(value)
-                # tag[attr] = make_dest(value)
+                for _value in values:
+                    if not _value.startswith(store_path):
+                        continue
+                    found_files.add(_value)
 
     # Copy files to local store
     for origin in found_files:
