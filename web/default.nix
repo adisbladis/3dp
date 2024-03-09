@@ -152,7 +152,7 @@ stdenvNoCC.mkDerivation {
   name = "3dp-web";
   dontUnpack = true;
   dontConfigure = true;
-  nativeBuildInputs = [ (python3.withPackages(ps: [ ps.beautifulsoup4 ])) ];
+  nativeBuildInputs = [ python3 ];
 
   exportReferencesGraph = [ "graph" indexHTML ];
 
@@ -163,9 +163,7 @@ stdenvNoCC.mkDerivation {
     cp ${indexHTML} dist/index.html
     chmod +w dist/index.html
 
-    cd dist
-    python3 ${./link-html.py} index.html
-    cd -
+    python3 ${./link-html.py} graph dist
 
     runHook postBuild
   '';
