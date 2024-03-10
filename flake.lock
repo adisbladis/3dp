@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "kakapo": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1710069853,
+        "narHash": "sha256-0NiAx2O7KzVlkq+Lv8/3nv4zCb1kDrW9Nci5GFT96ms=",
+        "owner": "adisbladis",
+        "repo": "kakapo",
+        "rev": "5f50b6b52549410691d28b4ee52d94adac511a89",
+        "type": "github"
+      },
+      "original": {
+        "owner": "adisbladis",
+        "repo": "kakapo",
+        "type": "github"
+      }
+    },
     "nixHtml": {
       "flake": false,
       "locked": {
@@ -34,6 +50,7 @@
     },
     "root": {
       "inputs": {
+        "kakapo": "kakapo",
         "nixHtml": "nixHtml",
         "nixpkgs": "nixpkgs"
       }

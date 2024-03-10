@@ -8,6 +8,7 @@
 , blender
 , openscad-unstable
 , fetchFromGitHub
+, kakapo
 }:
 let
   inherit (builtins) match;
@@ -79,7 +80,7 @@ let
 
   partsFlat = flattenTree parts;
 
-  indexHTML' = withDoctype (<html> { lang = "en"; } [
+  indexHTML = withDoctype (<html> { lang = "en"; } [
     (<head> { } [
       (<meta> { charset = "utf-8"; } null)
       (<title> { } title)
@@ -104,13 +105,14 @@ let
           } [ ]
       )
       (
-        <link> {
-          rel = "stylesheet";
-          href = fetchurl {
-            url = "https://cdn.jsdelivr.net/npm/spcss@0.9.0";
-            hash = "sha256-Q9jflzZSanhLoWi4pFNjCiCUZlfx3AKayOvU6nbBGoc=";
-          };
-        } [ ]
+        <link>
+          {
+            rel = "stylesheet";
+            href = fetchurl {
+              url = "https://cdn.jsdelivr.net/npm/spcss@0.9.0";
+              hash = "sha256-Q9jflzZSanhLoWi4pFNjCiCUZlfx3AKayOvU6nbBGoc=";
+            };
+          } [ ]
       )
     ])
     (<body> { } [
@@ -145,32 +147,7 @@ let
     ])
   ]);
 
-  indexHTML = writeText "index.html" indexHTML';
-
 in
-stdenvNoCC.mkDerivation {
-  name = "3dp-web";
-  dontUnpack = true;
-  dontConfigure = true;
-  nativeBuildInputs = [ python3 ];
-
-  exportReferencesGraph = [ "graph" indexHTML ];
-
-  buildPhase = ''
-    runHook preBuild
-
-    mkdir dist
-    cp ${indexHTML} dist/index.html
-    chmod +w dist/index.html
-
-    python3 ${./link-html.py} graph dist
-
-    runHook postBuild
-  '';
-
-  installPhase = ''
-    runHook preInstall
-    mv dist $out
-    runHook postInstall
-  '';
+kakapo.bundleTree "my-webroot" { } {
+  "index.html" = indexHTML;
 }

@@ -10,13 +10,25 @@
       builtins.fetchGit { inherit (flakeLock.nodes.nixHtml.locked) url rev; }
     )
     { }
+, kakapo ? (
+    let
+      flakeLock = lib.importJSON ./flake.lock;
+      lock = flakeLock.nodes.kakapo.locked;
+    in
+    callPackages
+      (pkgs.fetchFromGitHub {
+        inherit (lock) owner repo rev;
+        hash = lock.narHash;
+      })
+      { }
+  )
 }:
 let
   inherit (lib) mapAttrs;
 
   inherit (callPackages ./lib.nix { }) mkOpenscad;
 
-  mkWeb = callPackage ./web { inherit nixHtml; };
+  mkWeb = callPackage ./web { inherit nixHtml kakapo; };
 
 in
 lib.fix (self: {
