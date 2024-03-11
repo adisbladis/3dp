@@ -193,7 +193,7 @@ lib.fix (self: {
             bin = fetchModelZip {
               url = "https://files.printables.com/media/prints/266923/packs/2481770_8e224c42-e864-4e30-b6e2-6a6a4ce89753/gridfinity-pinecil-tip-holder-model_files.zip";
               hash = "sha256-XLNHLscmhEGksCoGHMdrYMgVZ0oTxxP8y65PgL/3Qnk=";
-              files = [ "Gridfinity Pinecil bin 14.1mm.3mf" ];
+              files = [ "Gridfinity Pinecil bin 14.3mm.3mf" ];
               meta = {
                 homepage = "https://www.printables.com/model/266923-gridfinity-pinecil-tip-holder";
                 license = lib.licenses.cc-by-nc-sa-40;
