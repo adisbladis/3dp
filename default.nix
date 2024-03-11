@@ -159,6 +159,16 @@ lib.fix (self: {
             };
           };
 
+          solderSucker = fetchModelZip {
+            url = "https://files.printables.com/media/prints/217839/packs/1096279_5dda6d7e-f745-4c1f-8deb-b9682c1fdbf0/gridfinity-engineer-ss-02-solder-sucker-model_files.zip";
+            files = [ "gridfinity_engineer_ss-02.stl" ];
+            hash = "sha256-mo5vaeoxfuyrHDib9BDUAy1bUyYztT2JR/NbRhin30I=";
+            meta = {
+              homepage = "https://www.printables.com/model/217839-gridfinity-engineer-ss-02-solder-sucker";
+              license = lib.licenses.cc-by-40;
+            };
+          };
+
           pinecil = {
             tipHolder = fetchModelZip {
               url = "https://files.printables.com/media/prints/435688/packs/2000390_92d9331b-9913-4308-9086-3c16688dd399/gridfinity-pinecil-9-tip-holder-model_files.zip";
