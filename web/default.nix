@@ -12,7 +12,7 @@
 }:
 let
   inherit (builtins) match;
-  inherit (lib) isAttrs isDerivation nameValuePair attrNames listToAttrs mapAttrsToList elemAt;
+  inherit (lib) isAttrs isDerivation nameValuePair attrNames listToAttrs mapAttrsToList elemAt optionalString;
 
   #
   _2gltf2 = fetchFromGitHub {
@@ -125,7 +125,23 @@ let
           mapAttrsToList
             (name: drv: <li> { } [
               (<h2> { } (esc name))
-              (esc (drv.meta.longDescription or drv.meta.description or ""))
+
+              (optionalString (drv.meta ? "license") (
+                let
+                  license = drv.meta.license;
+                in
+                (<div> { } [
+                  (<h4> { } (esc "License"))
+                  (<a> { href = license.url or ""; } (esc (license.spdxId or license.shortName or license.fullName)))
+                ])
+              ))
+
+              (optionalString (drv.meta ? "homepage") (
+                (<div> { } [
+                  (<h4> { } (esc "Homepage"))
+                  (<a> { href = drv.meta.homepage; } (esc (drv.meta.homepage)))
+                ])
+              ))
 
               (<h3> { } "Files")
               (<ul> { } (
