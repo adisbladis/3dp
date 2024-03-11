@@ -25,10 +25,25 @@
 }:
 let
   inherit (lib) mapAttrs;
+  inherit (pkgs) fetchzip;
 
   inherit (callPackages ./lib.nix { }) mkOpenscad;
 
   mkWeb = callPackage ./web { inherit nixHtml kakapo; };
+
+  fetchModelZip =
+    { url
+    , hash
+    , files ? [ ]
+    , passthru ? { }
+    , meta ? { }
+    }: fetchzip {
+      inherit url hash meta;
+      stripRoot = false;
+      passthru = passthru // {
+        inherit files;
+      };
+    };
 
 in
 lib.fix (self: {
@@ -54,6 +69,7 @@ lib.fix (self: {
                 attrs.targets;
               meta = meta // {
                 license = lib.licenses.mit;
+                homepage = "https://github.com/kennetek/gridfinity-rebuilt-openscad";
               };
             });
 
@@ -139,6 +155,18 @@ lib.fix (self: {
                   style_tab = tabStyles.full;
                   style_hole = holeStyles.none;
                 };
+              };
+            };
+          };
+
+          pinecil = {
+            tipHolder = fetchModelZip {
+              url = "https://files.printables.com/media/prints/435688/packs/2000390_92d9331b-9913-4308-9086-3c16688dd399/gridfinity-pinecil-9-tip-holder-model_files.zip";
+              hash = "sha256-qQE6Onwk3hRaE4mRPOe0W5zyYjXQLP13g6JIw/OqPMs=";
+              files = [ "Gridfinity Pinecil Tip Holder.3mf" ];
+              meta = {
+                homepage = "https://www.printables.com/model/435688-gridfinity-pinecil-9-tip-holder";
+                license = lib.licenses.cc-by-nc-sa-40;
               };
             };
           };
