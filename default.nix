@@ -200,6 +200,24 @@ lib.fix (self: {
             };
           };
 
+          screws = {
+            "3x1" = mkBins {
+              name = "1x1";
+              meta.description = "A regular 1x1 parts bin";
+              targets = {
+                "screwbin-3x1" = {
+                  gridx = 3;
+                  gridy = 1;
+                  gridz = 3;
+                  divx = 4;
+                  divy = 1;
+                  style_tab = tabStyles.full;
+                  style_hole = holeStyles.none;
+                };
+              };
+            };
+          };
+
           generic = {
             "1x1" = mkBins {
               name = "1x1";
